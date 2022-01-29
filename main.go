@@ -8,12 +8,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 const (
 	Base      = "https://api.weather.gov"
 	RefTime   = "2006-01-02T15:04:00-07:00"
-	ShortTime = "01-02-2006 15:04"
 )
 
 // Flags
@@ -107,16 +107,25 @@ func main() {
 	}
 	data := new(Outer)
 	json.Unmarshal(byts, data)
-	// Assume Periods[0] is current time -> 12 hour high/low by
-	// finding max/min in that range
-	end := *HiLoInt
+	tnow := time.Now()
+	day := tnow.Day()
+	hour := tnow.Hour()
+	var start int
+	for i, p := range data.Properties.Periods {
+		t, _ := time.Parse(RefTime, p.StartTime)
+		if t.Hour() == hour && t.Day() == day {
+			start = i
+			break
+		}
+	}
+	end := start+*HiLoInt
 	if l := len(data.Properties.Periods); l < end {
 		end = l
 	}
-	now := data.Properties.Periods[0]
+	now := data.Properties.Periods[start]
 	high := now.Temperature
 	low := now.Temperature
-	for _, p := range data.Properties.Periods[:end] {
+	for _, p := range data.Properties.Periods[start:end] {
 		if p.Temperature > high {
 			high = p.Temperature
 		}
