@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	Base      = "https://api.weather.gov"
-	RefTime   = "2006-01-02T15:04:00-07:00"
+	Base    = "https://api.weather.gov"
+	RefTime = "2006-01-02T15:04:00-07:00"
 )
 
 // Flags
@@ -81,15 +81,12 @@ func main() {
 			os.Exit(0)
 		}
 	}()
-	client := http.DefaultClient
 	req, err := http.NewRequest("GET", api, nil)
 	if err != nil {
 		panic(err)
 	}
-	req.Header["User-Agent"] = []string{
-		"weatherbar",
-	}
-	resp, err := client.Do(req)
+	req.Header.Add("User-Agent", "weatherbar")
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		panic(err)
 	}
@@ -118,7 +115,7 @@ func main() {
 			break
 		}
 	}
-	end := start+*HiLoInt
+	end := start + *HiLoInt
 	if l := len(data.Properties.Periods); l < end {
 		end = l
 	}
