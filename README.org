@@ -1,0 +1,51 @@
+#+title: weatherbar
+
+* Description
+
+  =weatherbar= is a simple program for fetching and formatting weather
+  information suited for a status bar from [[https://weather.gov][weather.gov]].
+
+* Installation
+
+  Either clone the repository and run
+
+  #+begin_src shell
+    go install .
+  #+end_src
+
+  inside of it, or run this directly:
+
+  #+begin_src shell
+    go install https://github.com/ntBre/weatherbar
+  #+end_src
+
+* Usage
+  The intended usage is inside of dwmblocks to put weather in your
+  status bar. Below is a minimal blocks.h that only has this block in
+  it with an interval of 600 seconds and a signal of RTMIN+12
+  associated with it.
+
+  #+begin_src C
+    static const Block blocks[] = {
+      {"", "weatherbar", 600, 12},
+    };
+
+    static char delim = '|';
+  #+end_src
+
+** Getting Weather
+
+   Click on the map from the weather.gov main page and extract your
+   local =ForecastOffice= from the end of the URL. Then click on the
+   refined map and get your =GridX= and =GridY= coordinates from x and
+   y in that URL. Then you can customize the last =fmt.Println= call
+   in =main.go= with the fields of your choosing.
+
+  For example, for this url =https://www.weather.gov/lbf/=, the
+  =ForecastOffice= is "LBF", and for
+
+  #+begin_src text
+    https://forecast.weather.gov/MapClick.php?x=133&y=37&site=lbf&zmx=&zmy=&map_x=133&map_y=37
+  #+end_src
+
+  =GridX= and =GridY= would be 133 and 37, respectively.
