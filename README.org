@@ -27,7 +27,7 @@
 
   #+begin_src C
     static const Block blocks[] = {
-      {"", "weatherbar", 600, 12},
+      {"", "weatherbar -f LBF -x 133 -y 37", 600, 12},
     };
 
     static char delim = '|';
@@ -49,3 +49,10 @@
   #+end_src
 
   =GridX= and =GridY= would be 133 and 37, respectively.
+
+  Then you can set these in your program invocation using the =-f=,
+  =-x=, and =-y= flags:
+
+  #+begin_src shell
+    weatherbar -f LBF -x 133 -y 37
+  #+end_src

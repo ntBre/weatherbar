@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,20 +11,29 @@ import (
 )
 
 const (
-	Base           = "https://api.weather.gov"
-	ForecastOffice = "DMX"
-	GridX          = "63"
-	GridY          = "26"
-	RefTime        = "2006-01-02T15:04:00-07:00"
-	ShortTime      = "01-02-2006 15:04"
-	HiLoInt        = 12
+	Base      = "https://api.weather.gov"
+	RefTime   = "2006-01-02T15:04:00-07:00"
+	ShortTime = "01-02-2006 15:04"
+)
+
+// Flags
+var (
+	ForecastOffice = flag.String("f", "DMX", "forecast office code")
+	GridX          = flag.Int("x", 63, "grid x coordinate")
+	GridY          = flag.Int("y", 26, "grid y coordinate")
+	HiLoInt        = flag.Int("r", 12, "range in hours for high and low")
 )
 
 var (
-	api = fmt.Sprintf("%s/gridpoints/%s/%s,%s/forecast/hourly",
-		Base, ForecastOffice, GridX, GridY)
+	api string
 	tmp = filepath.Join(os.TempDir(), "weatherbar.json")
 )
+
+func init() {
+	flag.Parse()
+	api = fmt.Sprintf("%s/gridpoints/%s/%d,%d/forecast/hourly",
+		Base, *ForecastOffice, *GridX, *GridY)
+}
 
 type Outer struct {
 	Properties Property
@@ -101,7 +111,7 @@ func main() {
 	json.Unmarshal(byts, data)
 	// Assume Periods[0] is current time -> 12 hour high/low by
 	// finding max/min in that range
-	end := HiLoInt
+	end := *HiLoInt
 	if l := len(data.Properties.Periods); l < end {
 		end = l
 	}
