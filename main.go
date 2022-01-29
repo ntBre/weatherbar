@@ -80,7 +80,6 @@ func main() {
 	}
 	req.Header["User-Agent"] = []string{
 		"weatherbar",
-		"brent@bwestbro.com",
 	}
 	resp, err := client.Do(req)
 	if err != nil {
