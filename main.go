@@ -25,15 +25,8 @@ var (
 )
 
 var (
-	api string
 	tmp = filepath.Join(os.TempDir(), "weatherbar.json")
 )
-
-func init() {
-	flag.Parse()
-	api = fmt.Sprintf("%s/gridpoints/%s/%d,%d/forecast/hourly",
-		Base, *ForecastOffice, *GridX, *GridY)
-}
 
 type Outer struct {
 	Properties Property
@@ -77,6 +70,9 @@ func LoadCache() []byte {
 }
 
 func main() {
+	flag.Parse()
+	api := fmt.Sprintf("%s/gridpoints/%s/%d,%d/forecast/hourly",
+		Base, *ForecastOffice, *GridX, *GridY)
 	// if something panics, just exit gracefully
 	defer func() {
 		if r := recover(); r != nil {
@@ -99,6 +95,8 @@ func main() {
 	}
 	var byts []byte
 	if resp.StatusCode != 200 {
+		fmt.Fprintf(os.Stderr, "loading from cache: error code %d\n",
+			resp.StatusCode)
 		byts = LoadCache()
 	} else {
 		byts, err = io.ReadAll(resp.Body)
@@ -126,8 +124,9 @@ func main() {
 			low = p.Temperature
 		}
 	}
-	fmt.Printf("Hi:%d Lo:%d %s %s Cur: %d°F",
+	fmt.Printf("Hi:%d Lo:%d Cur:%+d°F %s %s \n",
 		high, low,
+		now.Temperature,
 		now.WindDirection, now.WindSpeed,
-		now.Temperature)
+	)
 }
