@@ -35,24 +35,18 @@
 
 ** Getting Weather
 
-   Click on the map from the weather.gov main page and extract your
-   local =ForecastOffice= from the end of the URL. Then click on the
-   refined map and get your =GridX= and =GridY= coordinates from x and
-   y in that URL. Then you can customize the last =fmt.Println= call
-   in =main.go= with the fields of your choosing.
+   First, find the latitude and longitude for your location. Use these
+   with the following command to get your grid x and y coordinates.
 
-  For example, for this url =https://www.weather.gov/lbf/=, the
-  =ForecastOffice= is "LBF", and for
-
-  #+begin_src text
-    https://forecast.weather.gov/MapClick.php?x=133&y=37&site=lbf&zmx=&zmy=&map_x=133&map_y=37
-  #+end_src
-
-  =GridX= and =GridY= would be 133 and 37, respectively.
+   #+begin_src shell
+     curl -X GET "https://api.weather.gov/points/41.64,-91.54" | grep 'grid[XY]'
+     # -> "gridX": 33,
+     #    "gridY": 70,
+   #+end_src
 
   Then you can set these in your program invocation using the =-f=,
   =-x=, and =-y= flags:
 
   #+begin_src shell
-    weatherbar -f LBF -x 133 -y 37
+    weatherbar -f LBF -x 33 -y 70
   #+end_src
