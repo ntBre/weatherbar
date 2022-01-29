@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 const (
@@ -21,6 +22,7 @@ const (
 var (
 	api = fmt.Sprintf("%s/gridpoints/%s/%s,%s/forecast/hourly",
 		Base, ForecastOffice, GridX, GridY)
+	tmp = filepath.Join(os.TempDir(), "weatherbar.json")
 )
 
 type Outer struct {
@@ -46,7 +48,7 @@ type Period struct {
 }
 
 func WriteCache(byts []byte) {
-	f, err := os.Create("/tmp/weatherbar.json")
+	f, err := os.Create(tmp)
 	defer f.Close()
 	if err != nil {
 		panic(err)
@@ -55,7 +57,7 @@ func WriteCache(byts []byte) {
 }
 
 func LoadCache() []byte {
-	f, err := os.Open("/tmp/weatherbar.json")
+	f, err := os.Open(tmp)
 	if err != nil {
 		panic(err)
 	}
