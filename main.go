@@ -130,7 +130,7 @@ func main() {
 			low = p.Temperature
 		}
 	}
-	fmt.Printf("🔺%d 🔻%d Cur:%+d°F %s %s \n",
+	fmt.Printf("H %+d°F L %+d°F | ⛅ %+d°F %s %s \n",
 		high, low,
 		now.Temperature,
 		now.WindDirection, now.WindSpeed,
