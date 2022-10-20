@@ -16,7 +16,7 @@
   inside of it, or run this directly:
 
   #+begin_src shell
-    go install https://github.com/ntBre/weatherbar
+    go install github.com/ntBre/weatherbar@latest
   #+end_src
 
 * Usage
